@@ -2,6 +2,7 @@
 node_modules
 /dist
 
+# 為何沒有用？
 package-lock.json
 
 # local env files

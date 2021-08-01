@@ -6,14 +6,23 @@
 </template>
 
 <script>
-import { ref } from 'vue'
-import VantDemo from '@/components/vantDemo'
+import { ref, } from 'vue'
+import { useStore } from 'vuex'
+
+import VantDemo from '@/components/VantDemo'
+import TodoItem from '@/const/TodoItem'
 
 export default {
   components: {
     VantDemo
   },
+  // created() {
+  //   this.$store.commit('ADD_ITEM', new TodoItem())
+  // },
   setup() {
+    const store = useStore()
+    store.commit('ADD_TODO', new TodoItem())
+
     const rateNo = ref(3)
     return { rateNo }
   },
