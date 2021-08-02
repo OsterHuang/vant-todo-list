@@ -1,9 +1,13 @@
 <template>
   <div class="todo-head flex justify-between items-center w-11/12">
     <span class="text-3xl">我的待辦事項</span>
-    <ActionBar @addTodo="onShowAddTodo" />
+    <ActionBar :group="todoList.group" @addTodo="onShowAddTodo" @changeGroup="onChangeGroup" />
   </div>
-  <TodoList :list="todoList.list" @tickStatus="onTickStatus" @viewItem="onClickViewTodo" />
+  <TodoList
+    :list="todoList.list"
+    :group="todoList.group"
+    @tickStatus="onTickStatus"
+    @viewItem="onClickViewTodo" />
   <TodoPopup
     :item="todoPopup.editingTodo"
     :show="todoPopup.showingTodoPopup"
@@ -34,7 +38,8 @@ export default {
     const store = useStore()
 
     const todoList = reactive({
-      list: []
+      list: [],
+      group: 'done'
     })
     const todoPopup = reactive({
       showingTodoPopup: false,
@@ -53,13 +58,14 @@ export default {
       const onTickStatus = item => {
         // toggle the done flag
         store.commit('UPDATE_TODO', item)
-        // console.log('item.done:', item.done)
       }
+      const onChangeGroup = newVal => { todoList.group = newVal }
 
       return {
         todoList,
         onClickViewTodo,
-        onTickStatus
+        onTickStatus,
+        onChangeGroup
       }
     }
     // --- todoPopup ---
