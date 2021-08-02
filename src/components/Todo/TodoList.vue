@@ -1,5 +1,5 @@
 <template>
-  <TodoItem v-for="(item) in list " :key="item.id" :item="item" />
+  <TodoItem v-for="(item) in list " :key="item.id" :item="item" @viewItem="onViewItem" @tickStatus="onTickStatus" />
 </template>
 
 <script>
@@ -15,8 +15,14 @@ export default {
       default: () => ([])
     }
   },
-  setup() {
-    
+  emits: ['viewItem', 'tickStatus'],
+  setup(props, context) {
+    const onViewItem = item => { context.emit('viewItem', item) } 
+    const onTickStatus = item => { context.emit('tickStatus', item) }
+    return {
+      onViewItem,
+      onTickStatus
+    }
   }
 }
 </script>

@@ -19,6 +19,14 @@ export default createStore({
       state.todoList.push({...payload, id: state.seq })
       state.seq = state.seq + 1
     },
+    UPDATE_TODO (state, payload) {
+      const foundIdx = state.todoList.findIndex(item => item.id === payload.id)
+      if (foundIdx) state.todoList[foundIdx] = { ...payload, updateTime: new Date() }
+    },
+    DELETE_TODO (state, payload) {
+      const foundIdx = state.todoList.findIndex(item => item.id === payload.id)
+      state.todoList.splice(foundIdx, 1)
+    },
     CLEAR_NEW_TODO (state) {
       state.newTodoItem = new TodoItem(
         undefined, `輸入要做的事 ${state.seq}`, `請輸入您要做的事的詳細內容 ${state.seq}`

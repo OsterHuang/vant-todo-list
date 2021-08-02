@@ -12,7 +12,10 @@
     @close="$emit('close')"
   >
     <div class="wrapper flex flex-col">
-      <div class="title">內容是啥？</div>
+      <div class="title">
+        <span v-if="!editingItem.id">新增待辦</span>
+        <span v-else>編輯待辦</span>
+      </div>
       <VantCellGroup>
         <VantField label="標題" v-model="editingItem.title" />
         <VantField
@@ -50,23 +53,27 @@
 
       <VantRow type="flex" justify="space-around" class="button-area">
         <VantCol span="7">
-          <VantButton type="primary" round class="w-full" @click="$emit('add', editingItem)">新增</VantButton>
+          <VantButton v-if="!item.id" type="primary" round class="w-full" @click="$emit('add', editingItem)">新增</VantButton>
+          <VantButton v-else type="primary" round class="w-full" @click="$emit('update', editingItem)">修改</VantButton>
         </VantCol>
         <VantCol span="7">
-          <VantButton type="warning" round class="w-full" @click="$emit('clear')">清空</VantButton>
+          <VantButton v-if="!item.id" type="warning" round class="w-full" @click="$emit('clear')">清空</VantButton>
+          <VantButton v-else type="danger" round class="w-full" @click="onConfirmToDelete">刪除</VantButton>
         </VantCol>
         <VantCol span="7">
-          <VantButton type="primary" plain round class="w-full">取消</VantButton>
+          <VantButton type="primary" plain round class="w-full" @click="$emit('close')">取消</VantButton>
         </VantCol>
       </VantRow>
     </div>
   </VantPopup>
+
+
 </template>
 
 <script>
 import { Checkbox, CellGroup, Rate, Row, Col, Button } from 'vant'
 import { reactive, watch } from 'vue'
-import { Popup, Field } from 'vant'
+import { Popup, Field, Dialog } from 'vant'
 
 export default {
   components: {
@@ -89,14 +96,31 @@ export default {
       default: () => ({})
     }
   },
-  setup(props) {
+  setup(props, context) {
     const editingItem = reactive({})
 
     watch(() => props.item, (newVal, oldVal) => {
       Object.assign(editingItem, newVal)
       console.log(newVal, oldVal)
     })
-    return { editingItem }
+
+    const onConfirmToDelete = () => {
+      Dialog.confirm({
+        message: '是否要刪除？',
+      })
+      .then(() => {
+        context.emit('delete', editingItem)
+        // on confirm
+      })
+      .catch(() => {
+        // on cancel
+      });
+    }
+
+    return {
+      editingItem,
+      onConfirmToDelete
+    }
   },
 }
 </script>

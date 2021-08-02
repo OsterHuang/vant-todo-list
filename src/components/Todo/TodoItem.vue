@@ -1,8 +1,8 @@
 <template>
-  <VantCell value="..." is-link class="todo-cell" @click="onClickViewTodo">
+  <VantCell value="..." is-link class="todo-cell" @click="$emit('viewItem', item)">
     <!-- 使用 title 插槽来自定义标题 -->
     <template #title>
-      <VantCheckbox v-model="checked" style="width:fit-content">
+      <VantCheckbox v-model="checked" style="width:fit-content" @click.stop="onTickStatus">
         <span class="custom-title">{{ item.title }}</span>
       </VantCheckbox>
     </template>
@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import { ref, watch } from 'vue'
 import { Checkbox, Cell } from 'vant'
 
 export default {
@@ -26,17 +27,18 @@ export default {
       default: () => ({})
     }
   },
-  data() {
-    return {
-      checked: this.item.done
+  setup(props, context) {
+    const checked = ref(props.item.done)
+
+    watch(() => props.item.done, newVal => { checked.value = newVal })
+
+    const onTickStatus = () => {
+      context.emit('tickStatus', { ...props.item, done: checked })
     }
-  },
-  setup() {
-    const onClickViewTodo = () => {
-      console.log('Click還會傳下去嗎？')
-    }
+
     return {
-      onClickViewTodo
+      checked,
+      onTickStatus
     }
   },
 }

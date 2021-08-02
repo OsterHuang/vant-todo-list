@@ -3,11 +3,13 @@
     <span class="text-3xl">我的待辦事項</span>
     <ActionBar @addTodo="onShowAddTodo" />
   </div>
-  <TodoList :list="todoList.list" @clickItem="onClickViewTodo" />
+  <TodoList :list="todoList.list" @tickStatus="onTickStatus" @viewItem="onClickViewTodo" />
   <TodoPopup
     :item="todoPopup.editingTodo"
     :show="todoPopup.showingTodoPopup"
     @add="onAddNewTodo"
+    @update="onUpdateTodo"
+    @delete="onDeleteTodo"
     @clear="onClearNewTodo"
     @close="onCloseAddTodo"
   />
@@ -45,13 +47,19 @@ export default {
       todoList.list = computed(() => store.state.todoList)
 
       const onClickViewTodo = item => {
-        todoPopup.editingTodo = item
+        todoPopup.editingTodo = { ...item }
         todoPopup.showingTodoPopup = true
+      }
+      const onTickStatus = item => {
+        // toggle the done flag
+        store.commit('UPDATE_TODO', item)
+        // console.log('item.done:', item.done)
       }
 
       return {
         todoList,
-        onClickViewTodo
+        onClickViewTodo,
+        onTickStatus
       }
     }
     // --- todoPopup ---
@@ -61,6 +69,16 @@ export default {
       const onAddNewTodo = payload => {
         store.commit('ADD_TODO', payload)
         store.commit('CLEAR_NEW_TODO')
+        todoPopup.showingTodoPopup = false
+      }
+
+      const onUpdateTodo = payload => {
+        store.commit('UPDATE_TODO', payload)
+        todoPopup.showingTodoPopup = false
+      }
+
+      const onDeleteTodo = payload => {
+        store.commit('DELETE_TODO', payload)
         todoPopup.showingTodoPopup = false
       }
 
@@ -79,6 +97,8 @@ export default {
       return {
         todoPopup,
         onAddNewTodo,
+        onUpdateTodo,
+        onDeleteTodo,
         onShowAddTodo,
         onClearNewTodo,
         onCloseAddTodo
