@@ -101,7 +101,6 @@ export default {
 
     watch(() => props.item, (newVal, oldVal) => {
       Object.assign(editingItem, newVal)
-      console.log(newVal, oldVal)
     })
 
     const onConfirmToDelete = () => {

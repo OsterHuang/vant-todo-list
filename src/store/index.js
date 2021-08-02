@@ -35,7 +35,6 @@ export default createStore({
   },
   actions: {
     CreateSampleList ({ commit }) {
-      console.log('CreateSampleList')
       createSampleList().forEach(item => { commit('ADD_TODO', item) })
     }
   }
