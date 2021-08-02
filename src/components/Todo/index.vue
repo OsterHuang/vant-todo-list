@@ -31,12 +31,13 @@ export default {
   emits: ['addTodo'],
   setup() {
     const store = useStore()
+    
+    const showingAddTodo = ref(true)
     const data = reactive({ editingTodo: {} })
 
     const setupTodoPopup = () => {
       console.log('setupTodoPopup')
 
-      const showingAddTodo = ref(true)
       const onShowAddTodo = () => {
         data.editingTodo = computed(() => store.state.newTodoItem)
         showingAddTodo.value = true
@@ -45,6 +46,7 @@ export default {
         showingAddTodo.value = false
       }
       return {
+        editingTodo: data.editingTodo,
         showingAddTodo,
         onShowAddTodo,
         onCloseAddTodo
