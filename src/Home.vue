@@ -1,36 +1,39 @@
 <template>
-  <div class="home">
-    <h1 class="text-5xl">This is home</h1>
-    <VantDemo />
+  <div class="home flex flex-col items-center">
+    <Todo :list="todoList" />
   </div>
 </template>
 
 <script>
-import { ref, } from 'vue'
+import { computed } from 'vue'
 import { useStore } from 'vuex'
+import 'vant/lib/popup/style';
 
-import VantDemo from '@/components/VantDemo'
-import TodoItem from '@/const/TodoItem'
+import Todo from '@/components/Todo'
+
 
 export default {
   components: {
-    VantDemo
+    Todo,
   },
-  // created() {
-  //   this.$store.commit('ADD_ITEM', new TodoItem())
-  // },
   setup() {
     const store = useStore()
-    store.commit('ADD_TODO', new TodoItem())
 
-    const rateNo = ref(3)
-    return { rateNo }
+    const todoList = computed(() => store.state.todoList)
+    if (todoList.value.length === 0) store.dispatch('CreateSampleList')
+
+    return {
+      todoList,
+    }
   },
 }
 </script>
 
-
 <style lang="stylus" scoped>
 .home
+  width 100%
+  height 100%
+  min-width 375px
+  max-width 600px
   padding 12px
 </style>
