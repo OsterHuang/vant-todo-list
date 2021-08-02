@@ -4,11 +4,11 @@
     <ActionBar @addTodo="onShowAddTodo" />
   </div>
   <TodoList :list="list" />
-  <TodoPopup :item="editingTodo" :show="showingAddTodo" @close="onCloseAddTodo" />
+  <TodoPopup :item="todoPopup.editingTodo" :show="todoPopup.showingAddTodo" @close="onCloseAddTodo" />
 </template>
 
 <script>
-import { ref, reactive, computed } from 'vue'
+import { reactive, computed } from 'vue'
 import { useStore, } from 'vuex'
 
 import ActionBar from './ActionBar.vue'
@@ -31,31 +31,31 @@ export default {
   emits: ['addTodo'],
   setup() {
     const store = useStore()
-    
-    const showingAddTodo = ref(true)
-    const data = reactive({ editingTodo: {} })
 
+    const todoPopup = reactive({
+      showingAddTodo: true,
+      editingTodo: {}
+    })
+    
     const setupTodoPopup = () => {
       console.log('setupTodoPopup')
 
       const onShowAddTodo = () => {
-        data.editingTodo = computed(() => store.state.newTodoItem)
-        showingAddTodo.value = true
+        todoPopup.editingTodo = { ...computed(() => store.state.newTodoItem).value }
+        todoPopup.showingAddTodo = true
       }
       const onCloseAddTodo = () => {
-        showingAddTodo.value = false
+        todoPopup.showingAddTodo = false
       }
       return {
-        editingTodo: data.editingTodo,
-        showingAddTodo,
+        todoPopup,
         onShowAddTodo,
         onCloseAddTodo
       }
     }
 
     return {
-      ...setupTodoPopup(),
-      editingTodo: data.editingTodo
+      ...setupTodoPopup()
     }
   },
   methods: {

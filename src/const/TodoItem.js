@@ -9,7 +9,7 @@ export default class TodoItem {
 
   constructor(
     id,
-    title = '請輸入您要做的事',
+    title = '',
     description = '',
     priority = 3,
     done = false,
@@ -17,7 +17,7 @@ export default class TodoItem {
     updateTime = null
   ) {
     this.id = id;
-    this.title = title ;
+    this.title = title || '請輸入您要做的事' ;
     this.description = description ;
     this.priority =   priority;
     this.done =   done;
