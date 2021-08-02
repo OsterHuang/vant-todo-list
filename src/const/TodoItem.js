@@ -1,7 +1,7 @@
 export default class TodoItem {
   id;
-  title = '';
-  description = '';
+  title = '輸入要做的事';
+  description = '請輸入您要做的事的詳細內容';
   priority = 0;
   done = false;
   createTime = new Date();
@@ -17,7 +17,7 @@ export default class TodoItem {
     updateTime = null
   ) {
     this.id = id;
-    this.title = title || '請輸入您要做的事' ;
+    this.title = title || '輸入要做的事' ;
     this.description = description ;
     this.priority =   priority;
     this.done =   done;

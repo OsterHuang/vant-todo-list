@@ -3,8 +3,14 @@
     <span class="text-3xl">我的待辦事項</span>
     <ActionBar @addTodo="onShowAddTodo" />
   </div>
-  <TodoList :list="list" />
-  <TodoPopup :item="todoPopup.editingTodo" :show="todoPopup.showingAddTodo" @close="onCloseAddTodo" />
+  <TodoList :list="todoList.list" @clickItem="onClickViewTodo" />
+  <TodoPopup
+    :item="todoPopup.editingTodo"
+    :show="todoPopup.showingTodoPopup"
+    @add="onAddNewTodo"
+    @clear="onClearNewTodo"
+    @close="onCloseAddTodo"
+  />
 </template>
 
 <script>
@@ -22,39 +28,65 @@ export default {
     TodoList,
     TodoPopup
   },
-  props: {
-    list: {
-      type: Array,
-      default: () => ([])
-    }
-  },
-  emits: ['addTodo'],
   setup() {
     const store = useStore()
 
+    const todoList = reactive({
+      list: []
+    })
     const todoPopup = reactive({
-      showingAddTodo: true,
+      showingTodoPopup: false,
       editingTodo: {}
     })
-    
+
+    // --- todoList ---
+    const setupTodoList = () => {
+
+      todoList.list = computed(() => store.state.todoList)
+
+      const onClickViewTodo = item => {
+        todoPopup.editingTodo = item
+        todoPopup.showingTodoPopup = true
+      }
+
+      return {
+        todoList,
+        onClickViewTodo
+      }
+    }
+    // --- todoPopup ---
     const setupTodoPopup = () => {
-      console.log('setupTodoPopup')
+      
+
+      const onAddNewTodo = payload => {
+        store.commit('ADD_TODO', payload)
+        store.commit('CLEAR_NEW_TODO')
+        todoPopup.showingTodoPopup = false
+      }
+
+      const onClearNewTodo = () => {
+        store.commit('CLEAR_NEW_TODO')
+        todoPopup.editingTodo = computed(() => store.state.newTodoItem).value
+      }
 
       const onShowAddTodo = () => {
-        todoPopup.editingTodo = { ...computed(() => store.state.newTodoItem).value }
-        todoPopup.showingAddTodo = true
+        todoPopup.editingTodo = computed(() => store.state.newTodoItem).value
+        todoPopup.showingTodoPopup = true
       }
       const onCloseAddTodo = () => {
-        todoPopup.showingAddTodo = false
+        todoPopup.showingTodoPopup = false
       }
       return {
         todoPopup,
+        onAddNewTodo,
         onShowAddTodo,
+        onClearNewTodo,
         onCloseAddTodo
       }
     }
 
     return {
+      ...setupTodoList(),
       ...setupTodoPopup()
     }
   },

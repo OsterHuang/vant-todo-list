@@ -14,9 +14,9 @@
     <div class="wrapper flex flex-col">
       <div class="title">內容是啥？</div>
       <VantCellGroup>
-        <VantField label="標題" value="title" />
+        <VantField label="標題" v-model="editingItem.title" />
         <VantField
-          v-model="editingItem.title"
+          v-model="editingItem.description"
           rows="4"
           autosize
           label="詳情"
@@ -27,31 +27,33 @@
         />
         <VantField label="優先度">
           <template #input>
-            <VantRate v-model="rate" />
+            <VantRate v-model="editingItem.priority" />
           </template>
         </VantField>
           
         <VantField label="狀態">
           <template #input>
-            <VantCheckbox v-model="checked">
+            <VantCheckbox v-model="editingItem.done">
               已完成
             </VantCheckbox>
           </template>
         </VantField>
         <VantField label="創建時間">
-          <template #input> 2021-04-05 12:12 </template>
+          <template #input> {{ editingItem.createTime }} </template>
         </VantField>
-        <VantField label="更新時間" value="2021-04-13" />
+        <VantField label="更新時間">
+          <template #input> {{ editingItem.updateTime }} </template>
+        </VantField>
       </VantCellGroup>
 
       <div class="flex-grow" />
 
       <VantRow type="flex" justify="space-around" class="button-area">
         <VantCol span="7">
-          <VantButton type="primary" round class="w-full">新增</VantButton>
+          <VantButton type="primary" round class="w-full" @click="$emit('add', editingItem)">新增</VantButton>
         </VantCol>
         <VantCol span="7">
-          <VantButton type="warning" round class="w-full">清空</VantButton>
+          <VantButton type="warning" round class="w-full" @click="$emit('clear')">清空</VantButton>
         </VantCol>
         <VantCol span="7">
           <VantButton type="primary" plain round class="w-full">取消</VantButton>
@@ -63,7 +65,7 @@
 
 <script>
 import { Checkbox, CellGroup, Rate, Row, Col, Button } from 'vant'
-import { toRefs } from 'vue'
+import { reactive, watch } from 'vue'
 import { Popup, Field } from 'vant'
 
 export default {
@@ -88,7 +90,12 @@ export default {
     }
   },
   setup(props) {
-    const editingItem = toRefs(props.item)
+    const editingItem = reactive({})
+
+    watch(() => props.item, (newVal, oldVal) => {
+      Object.assign(editingItem, newVal)
+      console.log(newVal, oldVal)
+    })
     return { editingItem }
   },
 }

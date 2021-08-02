@@ -1,6 +1,6 @@
 <template>
   <div class="home flex flex-col items-center">
-    <Todo :list="todoList" />
+    <Todo />
   </div>
 </template>
 
@@ -21,10 +21,8 @@ export default {
 
     const todoList = computed(() => store.state.todoList)
     if (todoList.value.length === 0) store.dispatch('CreateSampleList')
-
-    return {
-      todoList,
-    }
+    store.commit('CLEAR_NEW_TODO')
+    
   },
 }
 </script>

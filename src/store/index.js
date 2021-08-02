@@ -20,7 +20,9 @@ export default createStore({
       state.seq = state.seq + 1
     },
     CLEAR_NEW_TODO (state) {
-      state.newTodoItem = new TodoItem()
+      state.newTodoItem = new TodoItem(
+        undefined, `輸入要做的事 ${state.seq}`, `請輸入您要做的事的詳細內容 ${state.seq}`
+      )
     },
   },
   actions: {
